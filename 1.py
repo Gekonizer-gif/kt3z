@@ -1,18 +1,18 @@
 # Задание 1
 def get_books(filename):
     with open(filename, encoding='utf-8') as f:
-        data = f.read().splitlines()[1:]
-        result = []
-        for line in data:
-            parts = line.split('|')
-            result.append([
-                parts[0],
-                parts[1],
-                parts[2],
-                int(parts[3]),
-                float(parts[4])
-            ])
-        return result
+        rows = f.read().split('\n')[1:]
+        return [
+            [
+                p[0],
+                p[1],
+                p[2],
+                int(p[3]),
+                float(p[4])
+            ]
+            for p in (line.split('|') for line in rows)
+            if len(p) == 5
+        ]
 
 
 print(get_books("books.csv"))
@@ -20,16 +20,16 @@ print(get_books("books.csv"))
 
 # Задание 2
 def filtered_books(books, query):
-    result = []
-    for b in books:
-        if query.lower() in b[1].lower():
-            result.append([
-                b[0],
-                f"{b[1]}, {b[2]}",
-                b[3],
-                b[4]
-            ])
-    return result
+    return [
+        [
+            b[0],
+            b[1] + ", " + b[2],
+            b[3],
+            b[4]
+        ]
+        for b in books
+        if query.lower() in b[1].lower()
+    ]
 
 
 print(filtered_books(get_books("books.csv"), "python"))
@@ -37,10 +37,10 @@ print(filtered_books(get_books("books.csv"), "python"))
 
 # Задание 3
 def calculate_totals(books):
-    result = []
-    for b in books:
-        result.append((b[0], round(b[2] * b[3], 2)))
-    return result
+    return [
+        (b[0], round(b[2] * b[3], 2))
+        for b in books
+    ]
 
 
 print(calculate_totals(filtered_books(get_books("books.csv"), "python")))
